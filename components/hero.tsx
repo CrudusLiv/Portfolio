@@ -90,23 +90,13 @@ export function Hero() {
               href="#projects"
               data-glow
               className={buttonVariants({ variant: 'default', size: 'lg' })}
-              style={{
-                backgroundColor: 'var(--primary)',
-                color: 'var(--primary-foreground)',
-                fontWeight: 700,
-              }}
             >
               View Projects
             </a>
             <a
               href="#contact"
               data-glow
-              className={buttonVariants({ variant: 'default', size: 'lg' })}
-              style={{
-                backgroundColor: 'var(--primary)',
-                color: 'var(--primary-foreground)',
-                fontWeight: 700,
-              }}
+              className={buttonVariants({ variant: 'outline', size: 'lg' })}
             >
               Contact Me
             </a>
