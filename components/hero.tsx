@@ -50,7 +50,7 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-0"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0"
     >
       <motion.div
         className="flex flex-col md:flex-row items-center gap-10 md:gap-16 px-4 md:px-6 max-w-5xl w-full"
