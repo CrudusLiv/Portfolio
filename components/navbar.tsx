@@ -132,27 +132,6 @@ export function Navbar() {
                 </a>
               </li>
             ))}
-            {mounted && (
-              <li className="border-t border-border pt-4">
-                <button
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-accent transition-colors w-full"
-                  aria-label="Toggle theme"
-                >
-                  {theme === 'dark' ? (
-                    <>
-                      <Sun className="w-4 h-4" />
-                      <span>Light Mode</span>
-                    </>
-                  ) : (
-                    <>
-                      <Moon className="w-4 h-4" />
-                      <span>Dark Mode</span>
-                    </>
-                  )}
-                </button>
-              </li>
-            )}
           </ul>
         </div>
       )}
