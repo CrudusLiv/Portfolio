@@ -1,149 +1,180 @@
 'use client'
 
+import { motion, useReducedMotion, type Variants } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
 import Image from 'next/image'
+import { Download } from 'lucide-react'
 import { bio } from '@/lib/data'
 import { buttonVariants } from '@/components/ui/button'
 
-function TypeWriter({ roles }: { roles: string[] }) {
-  const shouldReduce = useReducedMotion()
+const container: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.1, delayChildren: 0.1 },
+  },
+}
+
+const item: Variants = {
+  hidden: { opacity: 0, y: 18 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] } },
+}
+
+const avatarVariant: Variants = {
+  hidden: { opacity: 0, scale: 0.96 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.7, delay: 0.5, ease: 'easeOut' } },
+}
+
+function useRoleTypewriter(roles: string[], enabled: boolean) {
+  const [displayText, setDisplayText] = useState(roles[0])
   const [roleIndex, setRoleIndex] = useState(0)
-  const [displayed, setDisplayed] = useState('')
-  const [deleting, setDeleting] = useState(false)
+  const [phase, setPhase] = useState<'typing' | 'pausing' | 'erasing'>('pausing')
 
   useEffect(() => {
-    if (shouldReduce) {
-      setDisplayed(roles[0])
-      return
-    }
+    if (!enabled) return
     const role = roles[roleIndex]
-    if (!deleting && displayed.length < role.length) {
-      const t = setTimeout(() => setDisplayed(role.slice(0, displayed.length + 1)), 80)
-      return () => clearTimeout(t)
-    }
-    if (!deleting && displayed.length === role.length) {
-      const t = setTimeout(() => setDeleting(true), 2000)
-      return () => clearTimeout(t)
-    }
-    if (deleting && displayed.length > 0) {
-      const t = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 40)
-      return () => clearTimeout(t)
-    }
-    if (deleting && displayed.length === 0) {
-      setDeleting(false)
-      setRoleIndex((i) => (i + 1) % roles.length)
-    }
-  }, [displayed, deleting, roleIndex, roles, shouldReduce])
+    let timeout: ReturnType<typeof setTimeout>
 
-  return (
-    <span className="text-accent font-mono">
-      {displayed}
-      <span className="animate-pulse">|</span>
-    </span>
-  )
+    if (phase === 'typing') {
+      if (displayText.length < role.length) {
+        timeout = setTimeout(() => setDisplayText(role.slice(0, displayText.length + 1)), 60)
+      } else {
+        timeout = setTimeout(() => setPhase('pausing'), 2000)
+      }
+    } else if (phase === 'pausing') {
+      timeout = setTimeout(() => setPhase('erasing'), 100)
+    } else {
+      if (displayText.length > 0) {
+        timeout = setTimeout(() => setDisplayText(displayText.slice(0, -1)), 30)
+      } else {
+        const next = (roleIndex + 1) % roles.length
+        setRoleIndex(next)
+        setDisplayText('')
+        setPhase('typing')
+      }
+    }
+    return () => clearTimeout(timeout)
+  }, [displayText, phase, roleIndex, roles, enabled])
+
+  return displayText
 }
+
+const longestRole = bio.roles.reduce((a, b) => (b.length > a.length ? b : a), '')
 
 export function Hero() {
   const shouldReduce = useReducedMotion()
+  const displayRole = useRoleTypewriter(bio.roles, !shouldReduce)
 
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 md:pt-0"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16"
     >
+      <div className="w-full max-w-4xl mx-auto px-6 py-20 md:py-28">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-10 md:gap-16">
+          {/* Staggered text block */}
+          <motion.div
+            className="flex flex-col gap-5 flex-1"
+            variants={shouldReduce ? {} : container}
+            initial="hidden"
+            animate="show"
+          >
+            <motion.span
+              variants={shouldReduce ? {} : item}
+              className="inline-flex self-start items-center px-3 py-1 rounded-full border border-border text-xs font-mono text-muted-foreground tracking-widest uppercase"
+            >
+              <span className="relative inline-flex whitespace-nowrap">
+                {/* Invisible sizer reserves the width of the longest role so the badge never reflows */}
+                <span aria-hidden="true" className="invisible">
+                  {longestRole}
+                </span>
+                <span className="absolute inset-y-0 left-0 flex items-center">
+                  {shouldReduce ? bio.roles[0] : displayRole}
+                  {!shouldReduce && (
+                    <motion.span
+                      animate={{ opacity: [1, 0] }}
+                      transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                      className="inline-block w-px h-3 bg-current ml-1"
+                    />
+                  )}
+                </span>
+              </span>
+            </motion.span>
+
+            <motion.div variants={shouldReduce ? {} : item} className="space-y-1">
+              <h1 className="text-7xl md:text-8xl lg:text-9xl font-extrabold tracking-tight text-foreground leading-none">
+                Livnes
+              </h1>
+              <p className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight text-muted-foreground leading-none">
+                Ganesan
+              </p>
+            </motion.div>
+
+            <motion.p
+              variants={shouldReduce ? {} : item}
+              className="text-base md:text-lg text-muted-foreground max-w-sm leading-relaxed mt-1"
+            >
+              {bio.aboutText}
+            </motion.p>
+
+            <motion.div
+              variants={shouldReduce ? {} : item}
+              className="flex flex-wrap gap-3 mt-2"
+            >
+              <a href="#projects" className={buttonVariants({ variant: 'default', size: 'lg' })}>
+                View Projects
+              </a>
+              <a href="#contact" className={buttonVariants({ variant: 'outline', size: 'lg' })}>
+                Get in touch
+              </a>
+              <a
+                href={bio.resumeUrl}
+                download
+                className={buttonVariants({ variant: 'ghost', size: 'lg' })}
+              >
+                <Download className="w-4 h-4 mr-1.5" />
+                Resume
+              </a>
+            </motion.div>
+          </motion.div>
+
+          {/* Avatar */}
+          <motion.div
+            className="flex-shrink-0 self-start md:self-end"
+            variants={shouldReduce ? {} : avatarVariant}
+            initial="hidden"
+            animate="show"
+          >
+            <div className="relative w-44 h-52 md:w-52 md:h-64 rounded-lg overflow-hidden border border-border">
+              <Image
+                src={bio.avatarUrl}
+                alt={bio.name}
+                fill
+                className="object-cover"
+                priority
+                unoptimized
+              />
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Scroll cue */}
       <motion.div
-        className="flex flex-col md:flex-row items-center gap-10 md:gap-16 px-4 md:px-6 max-w-5xl w-full"
-        initial={shouldReduce ? {} : { opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        initial={shouldReduce ? {} : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.2, duration: 0.6 }}
       >
-        {/* Left: Text content */}
-        <div className="flex flex-col gap-3 md:flex-1">
-          <p className="font-mono text-sm text-muted-foreground tracking-widest uppercase">
-            Hello, I&apos;m
-          </p>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight gradient-text">
-            {bio.name}
-          </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground h-8">
-            <TypeWriter roles={bio.roles} />
-          </p>
-          <p className="text-muted-foreground text-base md:text-lg">
-            {bio.tagline}
-          </p>
-
-          {/* Divider */}
-          <div className="my-2 h-px bg-gradient-to-r from-accent/30 to-transparent" />
-
-          {/* About content */}
-          <div className="space-y-3 text-muted-foreground text-base leading-relaxed">
-            <p>{bio.aboutText}</p>
-            <p>
-              When I&apos;m not coding, you can find me exploring new technologies, contributing to
-              open source, or writing about software development.
-            </p>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 mt-4">
-            <a
-              href="#projects"
-              data-glow
-              className={buttonVariants({ variant: 'default', size: 'lg' })}
-            >
-              View Projects
-            </a>
-            <a
-              href="#contact"
-              data-glow
-              className={buttonVariants({ variant: 'outline', size: 'lg' })}
-            >
-              Contact Me
-            </a>
-          </div>
-        </div>
-
-        {/* Right: Avatar with offset border */}
-        <div className="flex-shrink-0 relative w-56 md:w-64 lg:w-72 h-80">
-          <div
-            className="absolute inset-0 rounded-lg border-2 border-accent translate-x-3 translate-y-3"
-            style={{ boxShadow: 'var(--glow-sm)' }}
-          />
-          <Image
-            src={bio.avatarUrl}
-            alt={`${bio.name} avatar`}
-            fill
-            data-glow
-            className="rounded-lg object-cover relative z-10"
-            priority
-            unoptimized
-          />
-        </div>
-      </motion.div>
-
-      {/* Scroll arrow */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
         <a
           href="#skills"
-          data-glow
-          aria-label="Scroll to skills section"
-          className="text-muted-foreground hover:text-accent transition-colors animate-bounce"
+          aria-label="Scroll to skills"
+          className="text-muted-foreground/40 hover:text-accent transition-colors block animate-bounce"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="6 9 12 15 18 9" />
           </svg>
         </a>
-      </div>
+      </motion.div>
     </section>
   )
 }

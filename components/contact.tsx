@@ -1,6 +1,10 @@
+'use client'
+
+import { motion, useReducedMotion } from 'framer-motion'
 import { Mail } from 'lucide-react'
 import { social } from '@/lib/data'
 import { SectionWrapper } from '@/components/section-wrapper'
+import { TypewriterHeading } from '@/components/typewriter-heading'
 
 function GithubIcon({ className }: { className?: string }) {
   return (
@@ -19,46 +23,44 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 const LINKS = [
-  { label: 'GitHub', icon: GithubIcon, key: 'github' as const },
-  { label: 'LinkedIn', icon: LinkedinIcon, key: 'linkedin' as const },
-  { label: 'Email', icon: Mail, key: 'email' as const },
+  { label: 'livnes.saranyaa@gmail.com', href: social.email, Icon: Mail, external: false },
+  { label: 'github.com/CrudusLiv', href: social.github, Icon: GithubIcon, external: true },
+  { label: 'LinkedIn', href: social.linkedin, Icon: LinkedinIcon, external: true },
 ]
 
 export function Contact() {
-  const hrefs: Record<string, string> = {
-    github: social.github,
-    linkedin: social.linkedin,
-    email: social.email,
-  }
+  const shouldReduce = useReducedMotion()
 
   return (
-    <SectionWrapper id="contact" className="text-center">
-      <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
-        <span className="font-mono text-accent text-xl">05.</span> Get In Touch
-      </h2>
-      <p className="text-muted-foreground text-lg max-w-md mx-auto mb-12">
-        Let&apos;s build something together. I&apos;m always open to new
-        opportunities and interesting projects.
-      </p>
-      <div className="flex flex-wrap justify-center gap-8">
-        {LINKS.map(({ label, icon: Icon, key }) => (
-          <a
-            key={key}
-            href={hrefs[key]}
-            target={key !== 'email' ? '_blank' : undefined}
-            rel={key !== 'email' ? 'noopener noreferrer' : undefined}
-            aria-label={label}
-            data-glow
-            className="flex flex-col items-center gap-2 group"
-          >
-            <span className="w-12 h-12 flex items-center justify-center rounded-lg border border-border bg-card group-hover:border-accent group-hover:text-accent group-hover:shadow-[var(--glow-sm)] transition-all duration-200">
-              <Icon className="h-5 w-5" />
-            </span>
-            <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors font-mono">
+    <SectionWrapper id="contact">
+      <div className="max-w-sm">
+        <div>
+          <TypewriterHeading text="Get in touch" className="text-2xl font-bold mb-3 text-foreground" />
+          <p className="text-muted-foreground mb-10 leading-relaxed text-sm">
+            Open to new opportunities and interesting projects. Let&apos;s build something together.
+          </p>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {LINKS.map(({ label, href, Icon, external }, i) => (
+            <motion.a
+              key={label}
+              href={href}
+              target={external ? '_blank' : undefined}
+              rel={external ? 'noopener noreferrer' : undefined}
+              className="flex items-center gap-3 text-sm text-muted-foreground hover:text-accent transition-colors group"
+              initial={shouldReduce ? {} : { opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.35, delay: 0.1 + i * 0.08 }}
+            >
+              <span className="w-8 h-8 flex items-center justify-center rounded border border-border bg-card group-hover:border-accent/60 transition-colors shrink-0">
+                <Icon className="w-3.5 h-3.5" />
+              </span>
               {label}
-            </span>
-          </a>
-        ))}
+            </motion.a>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
   )

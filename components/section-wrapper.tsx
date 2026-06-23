@@ -15,7 +15,7 @@ export function SectionWrapper({ id, children, className = '' }: SectionWrapperP
   return (
     <motion.section
       id={id}
-      className={`py-16 md:py-24 px-4 md:px-6 max-w-3xl mx-auto ${className}`}
+      className={`py-16 md:py-24 px-6 md:px-8 max-w-4xl mx-auto ${className}`}
       initial={shouldReduce ? {} : { opacity: 0, y: 40 }}
       whileInView={shouldReduce ? {} : { opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-80px' }}

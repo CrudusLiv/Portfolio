@@ -1,50 +1,68 @@
+'use client'
+
+import { motion, useReducedMotion } from 'framer-motion'
 import { education, certificates } from '@/lib/data'
 import { SectionWrapper } from '@/components/section-wrapper'
+import { TypewriterHeading } from '@/components/typewriter-heading'
 
 export function Education() {
+  const shouldReduce = useReducedMotion()
+
   return (
     <SectionWrapper id="education">
-      <h2 className="text-3xl font-bold mb-12 flex items-center gap-3">
-        <span className="font-mono text-accent text-xl">04.</span> Education & Certificates
-      </h2>
-      <div className="space-y-10">
-        <div>
-          <ol className="space-y-6">
-            {education.map((entry, i) => (
-              <li key={i} className="border border-border rounded-lg p-5 space-y-1">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                  <h3 className="text-lg font-semibold">{entry.institution}</h3>
-                  <span className="font-mono text-sm text-muted-foreground shrink-0">
-                    {entry.dateRange}
-                  </span>
-                </div>
-                <p className="text-accent font-medium text-sm">{entry.degree}</p>
-                <p className="text-muted-foreground text-sm">{entry.location}</p>
-                <p className="text-sm mt-2">
-                  <span className="font-mono text-muted-foreground">GPA </span>
-                  <span className="font-semibold">{entry.gpa}</span>
-                </p>
-              </li>
-            ))}
-          </ol>
-        </div>
+      <TypewriterHeading text="Education" className="text-2xl font-bold mb-10 text-foreground" />
+      <div className="space-y-4">
+        {/* Education entries */}
+        {education.map((entry, i) => (
+          <motion.div
+            key={i}
+            className="bg-card border border-border rounded-lg p-5 space-y-1.5"
+            initial={shouldReduce ? {} : { opacity: 0, y: 24, filter: 'blur(4px)' }}
+            whileInView={shouldReduce ? {} : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: i * 0.1 }}
+          >
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+              <h3 className="font-semibold text-foreground">{entry.institution}</h3>
+              <span className="font-mono text-xs text-muted-foreground shrink-0">{entry.dateRange}</span>
+            </div>
+            <p className="text-sm text-accent font-medium">{entry.degree}</p>
+            <p className="text-sm text-muted-foreground">
+              {entry.location}
+              <span className="ml-4 font-mono">GPA {entry.gpa}</span>
+            </p>
+          </motion.div>
+        ))}
 
+        {/* Certificates card */}
         {certificates.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Certificates</h3>
+          <motion.div
+            className="bg-card border border-border rounded-lg p-5 space-y-3"
+            initial={shouldReduce ? {} : { opacity: 0, y: 24, filter: 'blur(4px)' }}
+            whileInView={shouldReduce ? {} : { opacity: 1, y: 0, filter: 'blur(0px)' }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.45, ease: 'easeOut', delay: education.length * 0.1 }}
+          >
+            <h3 className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+              Certificates
+            </h3>
             <ul className="space-y-2">
               {certificates.map((cert, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span className="text-accent shrink-0">▸</span>
-                  <span>
-                    <span className="font-medium text-foreground">{cert.title}</span>
-                    {' — '}
-                    {cert.issuer}
-                  </span>
-                </li>
+                <motion.li
+                  key={i}
+                  className="flex items-baseline gap-3 text-sm"
+                  initial={shouldReduce ? {} : { opacity: 0, x: -8 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: i * 0.07 }}
+                >
+                  <span className="text-accent/50 text-xs shrink-0">—</span>
+                  <span className="text-foreground font-medium">{cert.title}</span>
+                  <span className="text-muted-foreground">{cert.issuer}</span>
+                </motion.li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         )}
       </div>
     </SectionWrapper>

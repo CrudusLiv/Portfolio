@@ -5,6 +5,7 @@ export interface Bio {
   aboutText: string
   avatarUrl: string
   username: string
+  resumeUrl: string
 }
 
 export interface SkillGroup {
@@ -48,11 +49,12 @@ export const bio: Bio = {
     'Dedicated Information Technology student with a strong foundation in databases, analytical techniques, web development, and scripting. Skilled in enhancing user experiences, solving technical challenges, and delivering efficient solutions.',
   avatarUrl: '/avatar.png',
   username: 'CrudusLiv',
+  resumeUrl: '/resume.pdf',
 }
 
 export const skills: SkillGroup = {
   languages: ['JavaScript', 'TypeScript', 'Python', 'SQL', 'C#', 'Kotlin', 'Java', 'PHP'],
-  frameworks: ['React', 'Angular', 'Next.js', 'Node.js', 'Vite', 'Responsive Design'],
+  frameworks: ['React', 'Angular', 'Next.js', 'Node.js', 'Vite', 'Tailwind CSS'],
   tools: ['Docker', 'Git', 'MongoDB', 'GitHub Actions'],
 }
 

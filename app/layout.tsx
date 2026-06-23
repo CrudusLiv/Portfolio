@@ -3,10 +3,12 @@ import './globals.css'
 import { bio } from '@/lib/data'
 import { CursorGlow } from '@/components/cursor-glow'
 import { BackgroundEffect } from '@/components/background-effect'
-import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { ThemeProvider } from '@/components/theme-provider'
+import { SectionDots } from '@/components/section-dots'
+import { ScrollProgress } from '@/components/scroll-progress'
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://CrudusLiv.github.io/Portfolio'),
   title: `${bio.name} — Developer Portfolio`,
   description: bio.tagline,
   openGraph: {
@@ -24,10 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-background text-foreground antialiased">
-        <ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="data-theme" forcedTheme="dark" enableSystem={false}>
+          <ScrollProgress />
           <BackgroundEffect />
           <CursorGlow />
-          <FloatingThemeToggle />
+          <SectionDots />
           {children}
         </ThemeProvider>
       </body>
