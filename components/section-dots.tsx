@@ -37,8 +37,14 @@ export function SectionDots() {
       const t = e.target as HTMLElement
       if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) return
 
-      const idx = SECTIONS.findIndex((s) => s.id === active)
-      if (idx === -1) return
+      const idx = SECTIONS.reduce((best, s, i) => {
+        const el = document.getElementById(s.id)
+        if (!el) return best
+        const top = Math.abs(el.getBoundingClientRect().top)
+        return best.top === undefined || top < best.top ? { i, top } : best
+      }, {} as { i?: number; top?: number }).i
+      if (idx === undefined) return
+
       const nextIdx =
         e.key === 'ArrowDown'
           ? Math.min(idx + 1, SECTIONS.length - 1)
@@ -52,7 +58,7 @@ export function SectionDots() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [active, shouldReduce])
+  }, [shouldReduce])
 
   if (shouldReduce) return null
 
