@@ -88,6 +88,6 @@ export const certificates: Certificate[] = [
 
 export const social: Social = {
   github: 'https://github.com/CrudusLiv',
-  linkedin: 'https://linkedin.com/in/your-linkedin',
+  linkedin: 'https://www.linkedin.com/in/livnes/',
   email: 'mailto:livnes.saranyaa@gmail.com',
 }
