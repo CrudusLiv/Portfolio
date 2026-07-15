@@ -1,0 +1,164 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-glow: var(--glow);
+  --color-solar: var(--solar);
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.375rem;
+  /* Deep Space */
+  --background: #050810;
+  --foreground: #E6EAF7;
+  --card: #0B1020;
+  --card-foreground: #E6EAF7;
+  --popover: #0B1020;
+  --popover-foreground: #E6EAF7;
+  --primary: #A78BFA;
+  --primary-foreground: #050810;
+  --secondary: #131A2E;
+  --secondary-foreground: #E6EAF7;
+  --muted: #10162A;
+  --muted-foreground: #8B94AD;
+  --accent: #A78BFA;
+  --accent-foreground: #050810;
+  --destructive: oklch(0.6 0.22 25);
+  --border: #1D2438;
+  --input: #131A2E;
+  --ring: #A78BFA;
+  --glow: #67E8F9;
+  --solar: #FBBF24;
+}
+
+/* Star Atlas — the parallel universe: ink constellations on aged paper */
+[data-theme='light'] {
+  --background: #F2EDE2;
+  --foreground: #232946;
+  --card: #FAF6EC;
+  --card-foreground: #232946;
+  --popover: #FAF6EC;
+  --popover-foreground: #232946;
+  --primary: #5B34B8;
+  --primary-foreground: #FAF6EC;
+  --secondary: #E9E2D0;
+  --secondary-foreground: #232946;
+  --muted: #ECE5D4;
+  --muted-foreground: #5A6076;
+  --accent: #5B34B8;
+  --accent-foreground: #FAF6EC;
+  --destructive: oklch(0.5 0.2 25);
+  --border: #D5CBB2;
+  --input: #EFE9DA;
+  --ring: #5B34B8;
+  --glow: #0E7490;
+  --solar: #B45309;
+}
+
+* {
+  border-color: var(--border);
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background-color: color-mix(in srgb, var(--solar) 22%, transparent);
+}
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.animate-star-twinkle {
+  animation: star-twinkle 3.2s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  animation: marquee 38s linear infinite;
+  will-change: transform;
+}
+
+.marquee-track-fast {
+  animation: marquee 26s linear infinite;
+  will-change: transform;
+}
+
+.marquee-wrap:hover .marquee-track,
+.marquee-wrap:hover .marquee-track-fast {
+  animation-play-state: paused;
+}
+
+@media (hover: none) {
+  body {
+    cursor: auto !important;
+  }
+}
+
+@keyframes grain {
+  0%   { background-position:   0px   0px; }
+  10%  { background-position: -25px -12px; }
+  20%  { background-position:  12px -38px; }
+  30%  { background-position: -18px  22px; }
+  40%  { background-position:  38px -18px; }
+  50%  { background-position: -32px  36px; }
+  60%  { background-position:  20px -28px; }
+  70%  { background-position: -42px  18px; }
+  80%  { background-position:  16px  32px; }
+  90%  { background-position: -30px -22px; }
+  100% { background-position:   0px   0px; }
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: grain 0.5s steps(10) infinite;
+}
