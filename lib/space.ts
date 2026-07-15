@@ -117,6 +117,87 @@ export function orbitPoint(spec: OrbitSpec, angle: number, cx: number, cy: numbe
   }
 }
 
+export interface ConstellationStar extends Point {
+  /** Radius in CSS px. */
+  r: number
+  /** The primary star — larger, tinted with the project's language color. */
+  main: boolean
+}
+
+export interface ConstellationSpec {
+  /** Star positions in 0..1 local cell coordinates. */
+  stars: ConstellationStar[]
+  /** Index pairs into `stars` describing the connecting lines. */
+  links: [number, number][]
+}
+
+/** FNV-1a — stable string hash so each repo keeps its constellation forever. */
+export function hashString(s: string): number {
+  let h = 2166136261
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  return h >>> 0
+}
+
+const CONSTELLATION_MARGIN = 0.14
+const MIN_STAR_GAP = 0.16
+
+/**
+ * Deterministic mini-constellation for a project name: 4–7 stars scattered
+ * in a unit cell, chained by nearest-neighbor lines from the primary star.
+ */
+export function generateConstellation(name: string): ConstellationSpec {
+  const rng = mulberry32(hashString(name))
+  const count = 4 + Math.floor(rng() * 4)
+
+  const stars: ConstellationStar[] = []
+  while (stars.length < count) {
+    const candidate = {
+      x: CONSTELLATION_MARGIN + rng() * (1 - CONSTELLATION_MARGIN * 2),
+      y: CONSTELLATION_MARGIN + rng() * (1 - CONSTELLATION_MARGIN * 2),
+      r: 1.4 + rng() * 1.4,
+      main: false,
+    }
+    // Rejection sampling keeps stars from clumping; the random accept path
+    // guarantees termination even for seeds that keep landing close together.
+    const tooClose = stars.some(
+      (s) => (s.x - candidate.x) ** 2 + (s.y - candidate.y) ** 2 < MIN_STAR_GAP ** 2
+    )
+    if (!tooClose || rng() < 0.25) stars.push(candidate)
+  }
+
+  let mainIdx = 0
+  stars.forEach((s, i) => {
+    if (s.r > stars[mainIdx].r) mainIdx = i
+  })
+  stars[mainIdx].main = true
+  stars[mainIdx].r += 1.3
+
+  // Chain every star along nearest-neighbor hops starting from the main star.
+  const links: [number, number][] = []
+  const unvisited = new Set(stars.map((_, i) => i))
+  let current = mainIdx
+  unvisited.delete(current)
+  while (unvisited.size > 0) {
+    let best = -1
+    let bestDist = Infinity
+    for (const i of unvisited) {
+      const d = (stars[i].x - stars[current].x) ** 2 + (stars[i].y - stars[current].y) ** 2
+      if (d < bestDist) {
+        bestDist = d
+        best = i
+      }
+    }
+    links.push([current, best])
+    unvisited.delete(best)
+    current = best
+  }
+
+  return { stars, links }
+}
+
 /** Cap device pixel ratio — retina fidelity is invisible for 1px stars. */
 export function clampDpr(dpr: number, isSmallViewport: boolean): number {
   return Math.min(dpr, isSmallViewport ? 1.5 : 2)

@@ -9,6 +9,19 @@ export interface GitHubRepo {
   pushed_at?: string
 }
 
+/** GitHub's linguist colors for the languages that appear in these repos. */
+export const LANG_COLORS: Record<string, string> = {
+  TypeScript: '#3178C6',
+  JavaScript: '#F7DF1E',
+  Python: '#3776AB',
+  Java: '#B07219',
+  Kotlin: '#7F52FF',
+  'C#': '#178600',
+  PHP: '#4F5D95',
+  Go: '#00ADD8',
+  Rust: '#DEA584',
+}
+
 export interface Telemetry {
   repoCount: number
   totalStars: number
