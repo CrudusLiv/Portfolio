@@ -112,7 +112,7 @@ export const certificates: Certificate[] = [
 export const social: Social = {
   github: 'https://github.com/CrudusLiv',
   linkedin: 'https://www.linkedin.com/in/livnes/',
-  email: 'mailto:livnes.saranyaa@gmail.com',
+  email: 'mailto:livnes.ganes@gmail.com',
 }
 
 export const about: About = {

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { Moon, Sun, X } from 'lucide-react'
 
 const NAV_LINKS = [
   { label: 'The Pilot', href: '#about' },
@@ -12,6 +13,31 @@ const NAV_LINKS = [
   { label: 'Credentials', href: '#credentials' },
   { label: 'Contact', href: '#contact' },
 ]
+
+function ThemeToggle() {
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Reserve the slot before mount so the navbar doesn't shift on hydration.
+  if (!mounted) return <span className="block w-9 h-9" aria-hidden="true" />
+
+  const isDark = theme === 'dark'
+
+  return (
+    <button
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      aria-label={isDark ? 'Switch to star atlas (light) theme' : 'Switch to deep space (dark) theme'}
+      title={isDark ? 'Star atlas' : 'Deep space'}
+      className="flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted-foreground hover:text-accent hover:border-accent/60 transition-colors"
+    >
+      {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+    </button>
+  )
+}
 
 export function Navbar() {
   const [activeSection, setActiveSection] = useState('')
@@ -66,10 +92,14 @@ export function Navbar() {
                 </li>
               )
             })}
+            <li>
+              <ThemeToggle />
+            </li>
           </ul>
 
-          {/* Mobile hamburger */}
-          <div className="md:hidden">
+          {/* Mobile hamburger + theme toggle */}
+          <div className="md:hidden flex items-center gap-2">
+            <ThemeToggle />
             <button
               className="flex flex-col gap-1.5 p-2"
               onClick={() => setMenuOpen((o) => !o)}

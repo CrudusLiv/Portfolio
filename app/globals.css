@@ -84,6 +84,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* 17px base — everything is rem-sized, so this scales the whole site up for readability */
+  font-size: 106.25%;
 }
 
 body {

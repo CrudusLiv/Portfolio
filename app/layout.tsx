@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { bio } from '@/lib/data'
 import { CursorGlow } from '@/components/cursor-glow'
-import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { Starfield } from '@/components/space/starfield'
 import { ThemeProvider } from '@/components/theme-provider'
 import { JourneyHud } from '@/components/journey-hud'
@@ -40,7 +39,6 @@ export default function RootLayout({
           <Starfield />
           <CursorGlow />
           <JourneyHud />
-          <FloatingThemeToggle />
           {children}
         </ThemeProvider>
       </body>

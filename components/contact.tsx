@@ -30,7 +30,7 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 const LINKS = [
-  { label: 'livnes.saranyaa@gmail.com', href: social.email, Icon: Mail, external: false },
+  { label: 'livnes.ganes@gmail.com', href: social.email, Icon: Mail, external: false },
   { label: 'github.com/CrudusLiv', href: social.github, Icon: GithubIcon, external: true },
   { label: 'LinkedIn', href: social.linkedin, Icon: LinkedinIcon, external: true },
 ]
@@ -168,12 +168,12 @@ function TransmissionForm() {
           <p aria-live="polite" className="text-xs font-mono">
             {status === 'sent' && (
               <span className="text-glow">
-                ✦ Transmission received. I&apos;ll reply from livnes.saranyaa@gmail.com soon.
+                ✦ Transmission received. I&apos;ll reply from livnes.ganes@gmail.com soon.
               </span>
             )}
             {status === 'error' && (
               <span className="text-red-400">
-                Transmitter offline. Email me directly at livnes.saranyaa@gmail.com instead.
+                Transmitter offline. Email me directly at livnes.ganes@gmail.com instead.
               </span>
             )}
           </p>
@@ -192,7 +192,7 @@ export function Contact() {
       <p className="text-muted-foreground mb-10 leading-relaxed text-base max-w-lg">
         Open to new opportunities and interesting projects. Messages sent here land straight in
         my inbox at{' '}
-        <span className="text-foreground font-medium">livnes.saranyaa@gmail.com</span>, and any
+        <span className="text-foreground font-medium">livnes.ganes@gmail.com</span>, and any
         email provider works on your side: Gmail, Outlook, or anything else.
       </p>
 
